@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clicker Game</title>
+    <style>
+         @font-face {
+            font-family: 'KoddiUDOnGothic-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/KoddiUDOnGothic-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        a {
+            text-decoration: none;
+        }
+        a:link, a:visited, a:hover, a:active {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        html, body {
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            background-color: #222;
+            color: #fff;
+            font-family: 'KoddiUDOnGothic-Regular', Arial, sans-serif; /* 폰트를 둥근모꼴로 변경 */
+            overflow: hidden;
+        }
+
+        #main_group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8fbff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .click_object {
+            position: relative; /* 눈사람을 앞에 배치 */
+            width: 200px;
+            height: 200px;
+            background-image: url('./img/Snow_ball.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            z-index: 10; /* 눈사람을 맨 위로 */
+        }
+
+        .click_object:hover {
+            transform: scale(1.1);
+        }
+
+        .snowflake {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-image: url('./img/Snow_plake.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: fade 1s ease-out forwards;
+            pointer-events: none;
+            z-index: 5; /* 눈사람보다 아래 */
+        }
+
+        .firework {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-image: url('./img/Snow_plake.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: explosion 1.5s ease-out forwards;
+            pointer-events: none;
+            z-index: 0; /* 불꽃놀이를 가장 아래로 */
+        }
+
+        #score {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            color: #fff;
+            z-index: 20; /* 점수는 항상 위에 표시 */
+        }
+
+        @keyframes fade {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.5) translateY(-50px);
+            }
+        }
+
+        @keyframes explosion {
+            0% {
+                opacity: 1;
+                transform: scale(1) translate(0, 0);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(2) translate(var(--x), var(--y));
+            }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="Main-1.html"> &lt; 이전으로</a>
+    </div>
+
+
+    <div id="main_group">
+        <div id="score">Score: 0</div>
+        <div class="click_object"></div>
+    </div>
+
+    <script>
+        const clickObject = document.querySelector('.click_object');
+        const mainGroup = document.getElementById('main_group');
+        const scoreDisplay = document.getElementById('score');
+
+        let score = 0;
+        const images = [
+            './img/Snow_ball.png',       // 단계 1: 작은 눈덩이
+            './img/Snow_ballbig.png',   // 단계 2: 큰 눈덩이
+            './img/Snow_man.png',       // 단계 3: 눈사람
+            './img/Snow_man_1.png',     // 단계 4: 눈사람 + 1 장식
+            './img/Snow_man_2.png',     // 단계 5: 눈사람 + 2 장식
+            './img/Snow_man_3.png'      // 단계 6: 완성된 눈사람
+        ];
+
+        // 클릭 이벤트
+        clickObject.addEventListener('click', () => {
+            score++;
+            scoreDisplay.innerText = `Score: ${score}`;
+            
+            // 이미지 단계 업데이트
+            const imageIndex = Math.min(Math.floor(score / 10), images.length - 1);
+            clickObject.style.backgroundImage = `url('${images[imageIndex]}')`;
+            
+            // 눈꽃 애니메이션 생성
+            createSnowflake();
+
+            // 마지막 단계에서 불꽃놀이 생성
+            if (score >= 10 * (images.length - 1)) {
+                createFireworks();
+            }
+        });
+
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.className = 'snowflake';
+            
+            // 랜덤 위치 설정
+            const x = Math.random() * 100; // 0% ~ 100%
+            const y = Math.random() * 100; // 0% ~ 100%
+            snowflake.style.left = `${x}vw`;
+            snowflake.style.top = `${y}vh`;
+            
+            mainGroup.appendChild(snowflake);
+
+            // 애니메이션이 끝나면 제거
+            snowflake.addEventListener('animationend', () => {
+                snowflake.remove();
+            });
+        }
+
+        function createFireworks() {
+            for (let i = 0; i < 10; i++) {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                
+                // 랜덤 위치와 방향 설정
+                const x = (Math.random() - 0.5) * 300; // -150px ~ +150px
+                const y = (Math.random() - 0.5) * 300; // -150px ~ +150px
+                firework.style.setProperty('--x', `${x}px`);
+                firework.style.setProperty('--y', `${y}px`);
+                firework.style.left = '50vw';
+                firework.style.top = '50vh';
+                
+                mainGroup.appendChild(firework);
+
+                // 애니메이션이 끝나면 제거
+                firework.addEventListener('animationend', () => {
+                    firework.remove();
+                });
+            }
+        }
+    </script>
+</body>
+</html>

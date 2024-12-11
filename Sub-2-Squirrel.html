@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @font-face {
+            font-family: 'KoddiUDOnGothic-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/KoddiUDOnGothic-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #fdf5e6;
+        overflow: hidden;
+        margin-top: 3%;
+        font-family: 'KoddiUDOnGothic-Regular', Arial, sans-serif;
+
+      }
+
+
+      a {
+        text-decoration: none;
+      }
+      a:link, a:visited, a:hover, a:active {
+        color: inherit;
+        text-decoration: none;
+      }
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #333;
+        color: white;
+        padding: 10px 20px;
+        font-size: 18px;
+      }
+
+
+      .grid-container {
+        
+        display: grid;
+        grid-template-columns: repeat(6, 1fr); /* 6개의 열 */
+        grid-template-rows: repeat(3, 1fr);  /* 3개의 행 */
+        gap: 0px; /* 간격 최소화 */
+        width: 100%; /* 화면 가득 채우기 */
+        height: 100%; /* 화면 가득 채우기 */
+        margin-left: 2%;
+
+      }
+
+      .fruit {
+        width: 80%;
+        height: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: transform 0.5s ease;
+        background: transparent;
+      }
+
+      .fruit:hover {
+        transform: rotate(360deg);
+      }
+
+      .png {
+        width: 80%; /* PNG 크기 조절 */
+        height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <a href="Main-1.html"> &lt; 이전으로</a>
+    </div>
+
+
+
+    <div class="grid-container">
+      <!-- 피드백: 공통 부분 반복되는 요소들 class를 최소화하는 게 코드 정리에 용이함 -->
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+      <div class="fruit" data-type="fruit">
+        <img src="img/fruit.png" alt="Fruit" class="png">
+      </div>
+    </div>
+    <script>
+      document.querySelectorAll('.fruit').forEach((fruit) => {
+        // 클릭 이벤트로 과일 -> 동물 변경
+        fruit.addEventListener('click', () => {
+          if (fruit.dataset.type === 'fruit') {
+            fruit.innerHTML = '<img src="img/animal.png" alt="Animal" class="png">';
+            fruit.dataset.type = 'animal';
+          }
+        });
+
+        // 마우스 호버 시 회전 애니메이션 추가
+        fruit.addEventListener('mouseover', () => {
+          fruit.style.transform = 'rotate(360deg)';
+        });
+
+        fruit.addEventListener('mouseleave', () => {
+          fruit.style.transform = 'rotate(0deg)';
+        });
+      });
+    </script>
+  </body>
+</html>

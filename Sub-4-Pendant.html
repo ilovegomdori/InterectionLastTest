@@ -1,0 +1,295 @@
+<html lang="en">
+<head>
+    <!--  코드참고: 
+    https://stackoverflow.com/questions/42609279/how-to-simulate-chain-physics-game-design  -->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        @font-face {
+            font-family: 'KoddiUDOnGothic-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/KoddiUDOnGothic-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+            font-family: 'KoddiUDOnGothic-Regular', Arial, sans-serif;
+            overflow: hidden;
+            background-color: rgb(63, 66, 62);
+        }
+
+
+        a {
+            text-decoration: none;
+        }
+        a:link, a:visited, a:hover, a:active {
+            color: inherit;
+            text-decoration: none;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="Main-1.html"> &lt; 이전으로</a>
+    </div>
+
+
+    <script>
+        var points = [];
+        var lines = [];
+        var fric = 0.999;
+        var surF = 0.999;
+        var grav = 0.9;
+        var ballRad = 10;
+        var stiffness = 12;
+        const fontSize = 33;
+        const maxStretchDistance = 1; // 최대 당길 거리
+        var chainImages = [new Image(), new Image(), new Image()];
+        chainImages[0].src = "./img/pendantChain2.png";
+        chainImages[1].src = "./img/pendantChain1.png";
+        chainImages[2].src = "./img/pendantMain.png";
+
+        // Function to add a point
+        function addPoint(x, y, vx, vy, rad = 10, fixed = false) {
+            points.push({
+                x: x,
+                y: y,
+                ox: x - vx,
+                oy: y - vy,
+                fixed: fixed,
+                radius: rad,
+            });
+            return points[points.length - 1];
+        }
+
+        // Function to add a line
+        function addLine(p1, p2, image) {
+            lines.push({
+                p1, p2, image,
+                len: Math.hypot(p1.x - p2.x, p1.y - p2.y),
+                draw() {
+                    if (this.image !== undefined) {
+                        var img = chainImages[this.image];
+                        var xdx = this.p2.x - this.p1.x;
+                        var xdy = this.p2.y - this.p1.y;
+                        var len = Math.hypot(xdx, xdy);
+                        xdx /= len;
+                        xdy /= len;
+                        ctx.setTransform(xdx, xdy, -xdy, xdx, (this.p1.x + this.p2.x) / 2, (this.p1.y + this.p2.y) / 2);
+                        ctx.drawImage(img, -img.width / 2, -img.height / 2);
+                    }
+                },
+            });
+            return lines[lines.length - 1];
+        }
+
+        // Function to create the necklace structure
+        function createNecklace() {
+            const leftStartX = 200; // Left top corner
+            const rightStartX = w - 200; // Right top corner
+            const topY = -30; // Top Y position
+            const bottomY = h - 400; // Bottom Y position for pendant
+            const spacing = (chainImages[0].width - ballRad * 0.5) * 0.5;
+
+            // Left chain (13 links)
+            var prevLeftPoint = addPoint(leftStartX, topY, 0, 0, ballRad, true); // Fixed top-left
+            for (let i = 1; i <= 13; i++) {
+                var newLeftPoint = addPoint(
+                    leftStartX + (w / 2 - leftStartX) * (i / 13), // X moves diagonally downward
+                    topY + (bottomY - topY) * (i / 13),
+                    0,
+                    0,
+                    ballRad
+                );
+                addLine(prevLeftPoint, newLeftPoint, i % 2);
+                prevLeftPoint = newLeftPoint;
+            }
+
+            // Right chain (13 links)
+            var prevRightPoint = addPoint(rightStartX, topY, 0, 0, ballRad, true); // Fixed top-right
+            for (let i = 1; i <= 13; i++) {
+                var newRightPoint = addPoint(
+                    rightStartX - (rightStartX - w / 2) * (i / 13), // X moves diagonally downward
+                    topY + (bottomY - topY) * (i / 13),
+                    0,
+                    0,
+                    ballRad
+                );
+                addLine(prevRightPoint, newRightPoint, i % 2);
+                prevRightPoint = newRightPoint;
+            }
+
+            // Pendant at the bottom center
+            var pendantPoint = addPoint(w / 2, bottomY, 0, 0, ballRad);
+            addLine(prevLeftPoint, pendantPoint, 2); // Connect left chain to pendant
+            addLine(prevRightPoint, pendantPoint, 2); // Connect right chain to pendant
+        }
+
+        // Constrain a point to the edge of the canvas
+        function constrainPoint(p) {
+            if (p.fixed) return;
+            var vx = (p.x - p.ox) * fric;
+            var vy = (p.y - p.oy) * fric;
+            var r = p.radius;
+            if (p.y <= r) p.y = r;
+            if (p.y >= h - r) p.y = h - r;
+            if (p.x < r) p.x = r;
+            if (p.x > w - r) p.x = w - r;
+        }
+
+        // Move a point
+        function movePoint(p) {
+            if (p.fixed) return;
+            var vx = (p.x - p.ox) * fric;
+            var vy = (p.y - p.oy) * fric;
+            p.ox = p.x;
+            p.oy = p.y;
+            p.x += vx;
+            p.y += vy;
+            p.y += grav;
+        }
+
+        // Constrain lines
+        function constrainLines() {
+            for (var l of lines) {
+                var dx = l.p2.x - l.p1.x;
+                var dy = l.p2.y - l.p1.y;
+                var len = Math.hypot(dx, dy);
+                var diff = (l.len - len) / len / 2;
+                dx *= diff;
+                dy *= diff;
+                if (!l.p1.fixed) {
+                    l.p1.x -= dx;
+                    l.p1.y -= dy;
+                }
+                if (!l.p2.fixed) {
+                    l.p2.x += dx;
+                    l.p2.y += dy;
+                }
+            }
+        }
+
+        // Move all points
+        function movePoints() {
+            for (var p of points) movePoint(p);
+        }
+
+        // Constrain all points
+        function constrainPoints() {
+            for (var p of points) constrainPoint(p);
+        }
+
+        // Draw all lines
+        function drawLines() {
+            for (var l of lines) l.draw();
+        }
+
+        // Check if top fixed points should break
+        function checkBreakPoints() {
+            for (let p of points) {
+                if (p.fixed && Math.abs(p.y - p.oy) > maxStretchDistance) {
+                    p.fixed = false; // Unfix point if stretched too far
+                }
+            }
+        }
+
+        // Main simulation function
+        function runSim() {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = "black";
+
+            // Interactivity: Drag chains with left mouse button
+            if (mouse.buttonRaw & 1) {
+                var closestIdx = closestPoint(mouse.x, mouse.y);
+                if (closestIdx !== -1) {
+                    points[closestIdx].x = mouse.x;
+                    points[closestIdx].y = mouse.y;
+                }
+            }
+
+            checkBreakPoints();
+            movePoints();
+            constrainPoints();
+            constrainLines();
+            drawLines();
+        }
+
+        // Initial loading function
+        function loading() {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = "black";
+            ctx.fillText("Loading media, please wait!", w / 2, 30);
+            if (chainImages.every(image => image.complete)) {
+                createNecklace();
+                doSim = runSim;
+            }
+        }
+
+        var doSim = loading;
+
+        // Canvas and resizing setup
+        var w, h, canvas, ctx, mouse = { x: 0, y: 0, buttonRaw: 0 };
+        (function () {
+            canvas = document.createElement("canvas");
+            document.body.appendChild(canvas);
+            canvas.addEventListener("mousemove", e => {
+                mouse.x = e.offsetX;
+                mouse.y = e.offsetY;
+            });
+            canvas.addEventListener("mousedown", e => {
+                mouse.buttonRaw |= 1 << e.button;
+            });
+            canvas.addEventListener("mouseup", e => {
+                mouse.buttonRaw &= ~(1 << e.button);
+            });
+            function resize() {
+                canvas.width = innerWidth;
+                canvas.height = innerHeight;
+                w = canvas.width;
+                h = canvas.height;
+                ctx = canvas.getContext("2d");
+                ctx.font = fontSize + "px arial";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+            }
+            window.addEventListener("resize", resize);
+            resize();
+            requestAnimationFrame(function loop() {
+                doSim();
+                requestAnimationFrame(loop);
+            });
+        })();
+
+        // Helper function: Find the closest point to the mouse
+        function closestPoint(x, y) {
+            let minDist = Infinity, idx = -1;
+            for (let i = 0; i < points.length; i++) {
+                let dist = Math.hypot(points[i].x - x, points[i].y - y);
+                if (dist < minDist) {
+                    minDist = dist;
+                    idx = i;
+                }
+            }
+            return idx;
+        }
+    </script>
+</body>
+</html>

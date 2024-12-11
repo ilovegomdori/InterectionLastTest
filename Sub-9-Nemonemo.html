@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Frames</title>
+    <style>
+        @font-face {
+            font-family: 'KoddiUDOnGothic-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/KoddiUDOnGothic-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        html, body {
+            height: 100vh;
+            width: 100vw;
+            margin: 1%;
+            font-family: 'KoddiUDOnGothic-Regular', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(0deg, #EAB8C5 0%, #FDE7E7 32%, #E4E1E2 100%);
+        }
+
+
+        a {
+            text-decoration: none;
+        }
+        a:link, a:visited, a:hover, a:active {
+            color: inherit;
+            text-decoration: none;
+        }
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+
+
+
+        #main_group {
+            display: flex;
+            width: 80%;
+            height: 80%;
+            margin-top: 2%;
+        }
+
+        .section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flip {
+            width: 80%;
+            perspective: 1000px;
+            margin: 10px 0;
+        }
+
+        .flip-inner {
+            position: relative;
+            width: 100%;
+            height: auto;
+            transform-style: preserve-3d;
+            transition: transform 1s;
+        }
+
+        .flip:hover .flip-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-front, .flip-back {
+            position: block;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+        }
+
+        .flip-back {
+            transform: rotateY(180deg);
+        }
+
+
+
+
+
+
+
+        .section:first-child {
+            flex: 1.2;
+        }
+
+        .section:nth-child(2) {
+            flex: 2;
+        }
+
+        .section:last-child {
+            flex: 1;
+        }
+
+        #section3_top {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="Main-1.html"> &lt; 이전으로</a>
+    </div>
+
+    <div id="main_group">
+        
+        <div class="section">
+            <div class="flip">
+                <div class="flip-inner">
+                    <img class="flip-front" src="./img/nemoframe_1.png" alt="nemoframe_1">
+                    <img class="flip-back" src="./img/nemoframe_1.png" alt="nemoframe_1">
+                </div>
+            </div>
+            <div class="flip">
+                <div class="flip-inner">
+                    <img class="flip-front" src="./img/nemoframe_2.png" alt="nemoframe_2">
+                    <img class="flip-back" src="./img/nemoframe_2.png" alt="nemoframe_2">
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="flip" style="width: 50%;">
+                <div class="flip-inner">
+                    <img class="flip-front" src="./img/nemoframe_3.png" alt="nemoframe_3">
+                    <img class="flip-back" src="./img/nemoframe_3.png" alt="nemoframe_3">
+                </div>
+            </div>
+            <div class="flip">
+                <div class="flip-inner">
+                    <img class="flip-front" src="./img/nemoframe_4.png" alt="nemoframe_4">
+                    <img class="flip-back" src="./img/nemoframe_4.png" alt="nemoframe_4">
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div id="section3_top">
+                <div class="flip" style="width: 50%;">
+                    <div class="flip-inner">
+                        <img class="flip-front" src="./img/nemoframe_5.png" alt="nemoframe_5">
+                        <img class="flip-back" src="./img/nemoframe_5.png" alt="nemoframe_5">
+                    </div>
+                </div>
+                <div class="flip" style="width: 50%;">
+                    <div class="flip-inner">
+                        <img class="flip-front" src="./img/nemoframe_6.png" alt="nemoframe_6">
+                        <img class="flip-back" src="./img/nemoframe_6.png" alt="nemoframe_6">
+                    </div>
+                </div>
+            </div>
+
+            <div id="section3_bottom">
+                <div class="flip">
+                    <div class="flip-inner">
+                        <img class="flip-front" src="./img/nemoframe_7.png" alt="nemoframe_7">
+                        <img class="flip-back" src="./img/nemoframe_7.png" alt="nemoframe_7">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

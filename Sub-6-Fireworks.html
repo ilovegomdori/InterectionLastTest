@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>불꽃놀이 효과</title>
+    <style>
+        @font-face {
+            font-family: 'KoddiUDOnGothic-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/KoddiUDOnGothic-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+
+
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: #323133;
+            overflow: hidden;
+            font-family: 'KoddiUDOnGothic-Regular', Arial, sans-serif;
+
+        }
+
+
+        a {
+            text-decoration: none;
+        }
+        a:link, a:visited, a:hover, a:active {
+            color: inherit;
+            text-decoration: none;
+        }
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+
+
+        .firework {
+            position: absolute;
+            width: 30px; /* 파티클의 크기 */
+            height: 30px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0;
+            animation: explode 1s forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1) translate(var(--x), var(--y));
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="Main-1.html"> &lt; 이전으로</a>
+    </div>
+
+
+<script>
+    const particleImages = [
+        './img/particle_1.png',
+        './img/particle_2.png',
+        './img/particle_3.png',
+        './img/particle_4.png',
+        './img/particle_5.png',
+        './img/particle_6.png',
+    ];
+
+    document.addEventListener('click', (e) => {
+        for (let i = 0; i < 20; i++) {
+            const firework = document.createElement('div');
+            firework.classList.add('firework');
+            document.body.appendChild(firework);
+
+            // 랜덤 이미지 적용
+            const randomImage = particleImages[Math.floor(Math.random() * particleImages.length)];
+            firework.style.backgroundImage = `url(${randomImage})`;
+
+            // 랜덤 각도와 거리
+            const angle = Math.random() * 2 * Math.PI; // 라디안 값
+            const distance = Math.random() * 100 + 50;
+
+            // 파티클의 x, y 좌표 계산
+            const x = Math.cos(angle) * distance + 'px';
+            const y = Math.sin(angle) * distance + 'px';
+
+            // 클릭한 위치에서 불꽃놀이가 시작됨
+            firework.style.setProperty('--x', x);
+            firework.style.setProperty('--y', y);
+            firework.style.left = `${e.clientX}px`;
+            firework.style.top = `${e.clientY}px`;
+
+            // 애니메이션이 끝나면 DOM에서 제거
+            setTimeout(() => {
+                firework.remove();
+            }, 1000);
+        }
+    });
+</script>
+
+</body>
+</html>

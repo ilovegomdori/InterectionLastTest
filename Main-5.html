@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+
+        @font-face {
+            font-family: 'KoddiUDOnGothic-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/KoddiUDOnGothic-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        a {
+            text-decoration: none;
+        }
+        a:link, a:visited, a:hover, a:active {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'KoddiUDOnGothic-Regular', Arial, sans-serif; /* 폰트를 둥근모꼴로 변경 */
+            background-color: #fefefe;
+            overflow: hidden; /* 전체 페이지의 스크롤 제거 */
+        }
+
+        /* Header bar */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: #f5f5f5;
+            width: 20%;
+            height: 100vh;
+            overflow-y: auto; /* 세로 스크롤 활성화 */
+            padding: 10px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            background-color: #e0e0e0;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .sidebar-item div {
+            width: 50px;
+            height: 50px;
+            background-color: #333;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+
+        .sidebar-item span {
+            font-size: 16px;
+        }
+
+        /* Main content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            width: 80%;
+            height: 80vh;
+            padding: 20px;
+            overflow: hidden; /* 메인 콘텐츠 영역의 스크롤 제거 */
+        }
+
+        .content-top {
+            display: flex;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .top-section {
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10%;
+            margin-left: 20%;
+        }
+
+        .album-cover {
+            width: 200px;
+            height: 200px;
+            /* background-color: #d3d3d3; */
+            background-image: url('./img/thum_sub5.png');
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .album-link {
+            font-size: 16px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .lyrics {
+            font-size: 14px;
+            line-height: 1.6;
+            text-align: center;
+            color: #c9c6be;
+            flex: 1;
+            overflow-y: auto;
+            padding-top: 5%;
+        }
+
+        .audio-controls-wrapper {
+            margin-top: 20px;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2%;
+        }
+
+        .progress-bar {
+            width: 60%;
+            height: 5px;
+            background-color: #d3d3d3;
+            margin: 0 10px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .progress-bar::after {
+            content: '';
+            width: var(--progress, 0%);
+            height: 5px;
+            background-color: #333;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .control-button {
+            background-color: #f48fb1;
+            border: none;
+            padding: 10px;
+            margin: 0 5px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .control-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        #present-position{
+            background-color: #f48fb1;
+        }
+
+        #sidebar-item-final{
+            margin-bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <span id="current-date"></span>
+        <span id="current-time"></span>
+    </div>
+
+    <!-- Sidebar and Main content -->
+    <div style="display: flex;">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-item">
+                <a href="Main-1.html">
+                    <div style="background-image: url('./img/thum_sub1.png'); background-size: cover;"></div>
+                </a>
+                <span>눈사람</span>
+            </div>
+            <div class="sidebar-item">
+                <a href="Main-2.html">
+                    <div style="background-image: url('./img/thum_sub2.png'); background-size: cover;"></div>
+                </a>
+                <span>다람쥐</span>
+            </div>
+            <div class="sidebar-item">
+                <a href="Main-3.html">
+                    <div style="background-image: url('./img/thum_sub3.png'); background-size: cover;"></div>
+                </a>
+                <span>도레미</span>
+            </div>
+            <div class="sidebar-item">
+                <a href="Main-4.html">
+                    <div style="background-image: url('./img/thum_sub4.png'); background-size: cover;"></div>
+                </a>
+                <span>험프티록</span>
+            </div>
+            <div class="sidebar-item" id="present-position">
+                <a href="Main-5.html">
+                    <div style="background-image: url('./img/thum_sub5.png'); background-size: cover;"></div>
+                </a>
+                <span>케이크</span>
+            </div>
+            <div class="sidebar-item">
+                <a href="Main-6.html">
+                    <div style="background-image: url('./img/thum_sub6.png'); background-size: cover;"></div>
+                </a>
+                <span>불꽃놀이</span>
+            </div>
+            <div class="sidebar-item">
+                <a href="Main-7.html">
+                    <div style="background-image: url('./img/thum_sub7.png'); background-size: cover;"></div>
+                </a>
+                <span>슬롯</span>
+            </div>
+            <div class="sidebar-item">
+                <a href="Main-8.html">
+                    <div style="background-image: url('./img/thum_sub8.png'); background-size: cover;"></div>
+                </a>
+                <span>밀크쉐이크</span>
+            </div>
+            <div class="sidebar-item" id="sidebar-item-final">
+                <a href="Main-9.html">
+                    <div style="background-image: url('./img/thum_sub9.png'); background-size: cover;"></div>
+                </a>
+                <span>네모</span>
+            </div>
+            
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-top">
+                <div class="top-section">
+                    <div class="album-cover"></div>
+                    <div class="album-link">
+                        <a href="Sub-5-Cake.html">
+                            페이지 바로가기 →
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lyrics">
+                    <br><br>
+                    울고싶어 질 때도 미소짓게 만드는 마법<br>
+                    맛있는 것을 만드는 것은 생각만 해도 재밌잖아요<br>
+                    <br>
+                    포근포근 달콤해 둥글둥글 부푸는 마음<br>
+                    맛있는꿈을 그려봐요 행복한 꿈빛 파티시엘<br>
+                    <br>
+                    strawberry fraisier and framboise<br>
+                    Happy happy Macaron! Fun Fun!<br>
+                    꿈을향해
+
+                </div>
+            </div>
+
+            <div class="audio-controls-wrapper">
+                <audio id="audio-player" src="./img/JingleBells.mp3"></audio>
+
+                <div class="audio-controls">
+                    <span>00:00</span>
+                    <div class="progress-bar"></div>
+                    <span>00:00</span>
+                </div>
+                <div class="audio-controls">
+                    <button class="control-button">⟳</button>
+                    <button class="control-button">|◁</button>
+                    <button class="control-button">▶</button>
+                    <button class="control-button">▷|</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audioPlayer = document.getElementById('audio-player');
+        const playButton = document.querySelector('.control-button:nth-child(3)');
+        const rewindButton = document.querySelector('.control-button:nth-child(2)');
+        const forwardButton = document.querySelector('.control-button:nth-child(4)');
+        const replayButton = document.querySelector('.control-button:nth-child(1)');
+        const progressBar = document.querySelector('.progress-bar');
+        const currentTimeDisplay = document.querySelector('.audio-controls span:nth-child(1)');
+        const durationDisplay = document.querySelector('.audio-controls span:nth-child(3)');
+
+        function updateProgress() {
+            const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+            progressBar.style.setProperty('--progress', `${progress}%`);
+            currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
+            durationDisplay.textContent = formatTime(audioPlayer.duration || 0);
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        playButton.addEventListener('click', () => {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playButton.textContent = '⏸';
+            } else {
+                audioPlayer.pause();
+                playButton.textContent = '▶';
+            }
+        });
+
+        rewindButton.addEventListener('click', () => {
+            audioPlayer.currentTime = Math.max(0, audioPlayer.currentTime - 10);
+        });
+
+        forwardButton.addEventListener('click', () => {
+            audioPlayer.currentTime = Math.min(audioPlayer.duration, audioPlayer.currentTime + 10);
+        });
+
+        replayButton.addEventListener('click', () => {
+            audioPlayer.currentTime = 0;
+            audioPlayer.play();
+        });
+
+        audioPlayer.addEventListener('timeupdate', updateProgress);
+
+        audioPlayer.addEventListener('loadedmetadata', updateProgress);
+
+        progressBar.addEventListener('click', (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const newTime = (clickX / rect.width) * audioPlayer.duration;
+            audioPlayer.currentTime = newTime;
+        });
+
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('current-date').textContent = `Today🍀 : ${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            document.getElementById('current-time').textContent = now.toTimeString().split(' ')[0];
+        }
+
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+    </script>
+</body>
+</html>

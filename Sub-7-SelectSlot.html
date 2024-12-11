@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>캐릭터 슬롯머신 & 팝업</title>
+    <style>
+        @font-face {
+            font-family: 'KoddiUDOnGothic-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/KoddiUDOnGothic-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            background-color: #222;
+            color: #000000;
+            font-family: 'KoddiUDOnGothic-Regular', Arial, sans-serif; /* 폰트를 둥근모꼴로 변경 */
+            overflow: hidden;
+        }
+
+        body {
+            /* font-family: Arial, sans-serif; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        a {
+            text-decoration: none;
+        }
+        a:link, a:visited, a:hover, a:active {
+            color: inherit;
+            text-decoration: none;
+        }
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+
+
+        .slot-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .slot {
+            display: flex;
+            justify-content: space-between;
+            width: 400px;
+            overflow: hidden;
+            border: 2px solid #000;
+            padding-left: 10px;
+            background-color: #fff;
+        }
+        
+        .option {
+            width: 60px;
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        #arrow1 {
+            font-size: 2rem;
+            position: absolute;
+            left: 0;
+            top: 60px;
+        }
+        #arrow2 {
+            font-size: 2rem;
+            position: absolute;
+            left: 0;
+            top: 31px;
+        }
+        #arrow3 {
+            font-size: 2rem;
+            position: absolute;
+            left: 0;
+            top: 31px;
+        }
+
+        button {
+            font-size: 1rem;
+            background-color:#000;
+            color: #fff;
+            border: #000 2px;
+        }
+        button:hover {
+            background-color: #ff769d;
+        }
+
+        #selectedImages {
+            margin-top: 20px;
+        }
+
+        .selectedImage {
+            display: inline-block;
+            margin: 10px;
+        }
+
+        /* 얼굴 이미지 설정 */
+        .face {
+            margin-top: 14px;
+            width: 100%;
+            height: auto;        
+            object-fit: contain;
+        }
+
+        /* 눈 이미지 설정 */
+        .eyes {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* 입 이미지 설정 */
+        .mouth {
+            width: auto;
+            height: 20px;
+            object-fit: contain;
+        }
+
+        /* -------------------------------- 그림판 팝업창 */
+        .outer-window {
+            display: none; /* 처음에는 안보이게 */
+            width: 400px;
+            border: 3px solid #8a8a8a;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+            background-color: #f0f0f0;
+            position: absolute;
+            top: 50px;
+            left: 50px;
+        }
+
+        .title-bar {
+            background-color: #dcdcdc;
+            padding: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #8a8a8a;
+            cursor: move;
+        }
+
+        .title-bar span {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .inner-window {
+            padding: 0;
+            background-color: #fff;
+            color: #333;
+            font-size: 14px;
+            position: relative;
+        }
+
+        canvas {
+            border: 1px solid #8a8a8a;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="Main-1.html"> &lt; 이전으로</a>
+    </div>
+
+
+    <h1>나만의 캐릭터 만들기🍀</h1>
+    <div class="slot-container">
+        <div class="slot" id="slot1">
+            <div class="option"><img class="face" src="image/얼굴1.png"></div>
+            <div class="option"><img class="face" src="image/얼굴2.png"></div>
+            <div class="option"><img class="face" src="image/얼굴3.png"></div>
+            <div class="option"><img class="face" src="image/얼굴4.png"></div>
+            <div class="option"><img class="face" src="image/얼굴5.png"></div>
+            <button id="stopButton1">✔</button>
+        </div>
+        <div class="arrow" id="arrow1">⬆</div>
+    </div>
+
+    <div class="slot-container">
+        <div class="slot" id="slot2">
+            <div class="option"><img class="eyes" src="image/눈1.png"></div>
+            <div class="option"><img class="eyes" src="image/눈2.png"></div>
+            <div class="option"><img class="eyes" src="image/눈3.png"></div>
+            <div class="option"><img class="eyes" src="image/눈4.png"></div>
+            <div class="option"><img class="eyes" src="image/눈5.png"></div>
+            <button id="stopButton2">✔</button>
+        </div>
+        <div class="arrow" id="arrow2">⬆</div>
+    </div>
+
+    <div class="slot-container">
+        <div class="slot" id="slot3">
+            <div class="option"><img class="mouth" src="image/입1.png"></div>
+            <div class="option"><img class="mouth" src="image/입2.png"></div>
+            <div class="option"><img class="mouth" src="image/입3.png"></div>
+            <div class="option"><img class="mouth" src="image/입4.png"></div>
+            <div class="option"><img class="mouth" src="image/입5.png"></div>
+            <button id="stopButton3">✔</button>
+        </div>
+        <div class="arrow" id="arrow3">⬆</div>
+    </div>
+
+    <div id="selectedImages">
+        <p>선택된 이미지:</p>
+    </div>
+
+    <!-- 그림판 팝업창 -->
+    <div class="outer-window" id="popup-window">
+        <div class="title-bar" id="title-bar">
+            <span>이미지를 조합하여 그려보세요❤️</span>
+            <button class="close-btn" id="close-btn">X</button>
+        </div>
+        <div class="inner-window">
+            <canvas id="canvas" width="400" height="300"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // 팝업창의 타이틀 바를 드래그해서 창을 움직이는 기능
+        const titleBar = document.getElementById("title-bar");
+        const dragWindow = document.getElementById("popup-window");
+    
+        // 타이틀 바를 클릭한 상태에서 마우스를 움직일 때
+        titleBar.onmousedown = function (e) {
+            const offsetX = e.clientX - dragWindow.offsetLeft; // 마우스와 팝업창의 X축 차이 계산
+            const offsetY = e.clientY - dragWindow.offsetTop; // 마우스와 팝업창의 Y축 차이 계산
+    
+            // 마우스를 움직일 때 창의 위치를 마우스 좌표에 맞춰서 이동
+            document.onmousemove = function (e) {
+                dragWindow.style.left = e.clientX - offsetX + 'px'; // 팝업창 X축 이동
+                dragWindow.style.top = e.clientY - offsetY + 'px'; // 팝업창 Y축 이동
+            };
+    
+            // 마우스를 떼면 이동 멈춤
+            document.onmouseup = function () {
+                document.onmousemove = null; // 이동 중지
+            };
+        };
+
+
+        // 그림판 기능 (이해포기...)
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+
+        canvas.addEventListener('mousedown', () => {
+            isDrawing = true;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDrawing) {
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = 'black';
+
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(e.offsetX, e.offsetY);
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+            ctx.beginPath();
+        });
+
+    
+
+        // * 슬롯 버튼 클릭 카운트 및 팝업창 기능
+        let clickCount = 0; // 버튼 클릭 횟수를 저장하는 변수
+    
+        // 슬롯 기능을 초기화
+        function initSlot(slotId, arrowId, buttonId) {
+            let slot = document.getElementById(slotId);
+            let options = slot.querySelectorAll('.option');
+            let arrow = document.getElementById(arrowId);
+            let button = document.getElementById(buttonId);
+    
+            let currentPosition = 0; // 화살표의 현재 위치
+            let moveInterval; // 화살표가 움직이는 간격
+            let direction = 1; // 화살표의 이동 방향 (오른쪽=1, 왼쪽=-1)
+            let optionWidth = 90; // 각 옵션 이미지들의 너비
+    
+            // 화살표를 좌우로 움직이게 하는 함수
+            function moveArrow() {
+                // 일정 간격으로 화살표를 움직이게 함
+                moveInterval = setInterval(function () {
+
+                    currentPosition += 2 * direction; // 화살표의 위치 이동
+
+                    // 화살표가 범위를 벗어나면 이동 방향을 반대로 바꿈
+                    if (currentPosition >= (options.length - 1) * optionWidth || currentPosition <= 0) {
+                        direction *= -1; // 이동 방향을 반대로 바꿈
+                    }
+                    // 화살표의 위치를 스타일로 적용
+                    arrow.style.left = currentPosition + 'px';
+                }, 10); // 10밀리초마다 실행
+            }
+    
+            // 정지 버튼을 눌렀을 때,
+            button.addEventListener('click', function () {
+                clearInterval(moveInterval); // 화살표 이동 멈춤
+                let selectedIndex = Math.round(currentPosition / optionWidth); // 화살표 위치에 따른 옵션 선택
+                let selectedImage = options[selectedIndex].querySelector('img').src; // 선택된 이미지의 경로
+    
+                // 선택된 이미지를 아래에 표시
+                let selectedImagesDiv = document.getElementById('selectedImages'); // 선택된 이미지들을 표시할 영역
+                let imgElement = document.createElement('img'); // 새로운 img 만듬
+                imgElement.src = selectedImage; // 선택된 이미지의 경로를 설정
+                imgElement.className = 'selectedImage'; // 선택된 이미지의 클래스 설정
+                selectedImagesDiv.appendChild(imgElement); // 선택된 이미지를 화면에 추가
+    
+                clickCount++; // 클릭 횟수 증가 시킴
+
+                // 클릭 횟수가 3 (= 모든 슬롯의 화살표를 중지시키면) 그림창 팝업
+                if (clickCount === 3) {
+                    document.getElementById('popup-window').style.display = 'block'; // 팝업창 보이기
+                }
+            });
+    
+            moveArrow(); // 페이지가 로드되면 화살표가 자동으로 움직이기 시작
+        }
+    
+        // 팝업창 닫기
+        document.getElementById('close-btn').addEventListener('click', function () {
+            document.getElementById('popup-window').style.display = 'none'; // 팝업창 숨기기
+        });
+    
+        // 세 개의 슬롯을 각각 초기화
+        initSlot('slot1', 'arrow1', 'stopButton1'); // 첫 번째 슬롯
+        initSlot('slot2', 'arrow2', 'stopButton2'); // 두 번째 슬롯
+        initSlot('slot3', 'arrow3', 'stopButton3'); // 세 번째 슬롯
+    </script>
+    
+</body>
+</html>
